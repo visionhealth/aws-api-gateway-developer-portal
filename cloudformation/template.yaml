@@ -712,8 +712,6 @@ Resources:
 
   PreLoginAccountsTable:
     Type: AWS::DynamoDB::Table
-    DeletionPolicy: Retain
-    UpdateReplacePolicy: Retain
     Properties:
       TableName: !Ref DevPortalPreLoginAccountsTableName
       BillingMode: PAY_PER_REQUEST
@@ -727,8 +725,6 @@ Resources:
   FeedbackTable:
     Type: AWS::DynamoDB::Table
     Condition: EnableFeedbackSubmission
-    DeletionPolicy: Retain
-    UpdateReplacePolicy: Retain
     Properties:
       TableName: !Ref DevPortalFeedbackTableName
       BillingMode: PAY_PER_REQUEST

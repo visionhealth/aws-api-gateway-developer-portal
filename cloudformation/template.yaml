@@ -630,10 +630,10 @@ Resources:
     Properties:
       BucketName: !Ref DevPortalSiteS3BucketName
       PublicAccessBlockConfiguration:
-        BlockPublicAcls: true
-        BlockPublicPolicy: true
-        IgnorePublicAcls: true
-        RestrictPublicBuckets: true
+        BlockPublicAcls:  !If [ NotDevelopmentMode, 'true', 'false' ]
+        BlockPublicPolicy: !If [ NotDevelopmentMode, 'true', 'false' ]
+        IgnorePublicAcls: !If [ NotDevelopmentMode, 'true', 'false' ]
+        RestrictPublicBuckets: !If [ NotDevelopmentMode, 'true', 'false' ]
 
   DevPortalSiteS3BucketPolicy:
     Type: 'AWS::S3::BucketPolicy'
@@ -655,10 +655,10 @@ Resources:
     Properties:
       BucketName: !Ref ArtifactsS3BucketName
       PublicAccessBlockConfiguration:
-        BlockPublicAcls: true
-        BlockPublicPolicy: true
-        IgnorePublicAcls: true
-        RestrictPublicBuckets: true
+        BlockPublicAcls:  !If [ NotDevelopmentMode, 'true', 'false' ]
+        BlockPublicPolicy: !If [ NotDevelopmentMode, 'true', 'false' ]
+        IgnorePublicAcls: !If [ NotDevelopmentMode, 'true', 'false' ]
+        RestrictPublicBuckets: !If [ NotDevelopmentMode, 'true', 'false' ]
       NotificationConfiguration:
         LambdaConfigurations:
           -
@@ -686,6 +686,7 @@ Resources:
     UpdateReplacePolicy: Retain
     Properties:
       TableName: !Ref DevPortalCustomersTableName
+      BillingMode: PAY_PER_REQUEST
       AttributeDefinitions:
       - AttributeName: Id
         AttributeType: S
@@ -695,9 +696,6 @@ Resources:
       KeySchema:
       - AttributeName: Id
         KeyType: HASH
-      ProvisionedThroughput:
-        ReadCapacityUnits: 5
-        WriteCapacityUnits: 5
       # Marketplace support is currently broken
       # GlobalSecondaryIndexes:
       # - IndexName: MarketplaceCustomerIdIndex
@@ -718,15 +716,13 @@ Resources:
     UpdateReplacePolicy: Retain
     Properties:
       TableName: !Ref DevPortalPreLoginAccountsTableName
+      BillingMode: PAY_PER_REQUEST
       AttributeDefinitions:
       - AttributeName: UserId
         AttributeType: S
       KeySchema:
       - AttributeName: UserId
         KeyType: HASH
-      ProvisionedThroughput:
-        ReadCapacityUnits: 5
-        WriteCapacityUnits: 5
 
   FeedbackTable:
     Type: AWS::DynamoDB::Table
@@ -735,15 +731,13 @@ Resources:
     UpdateReplacePolicy: Retain
     Properties:
       TableName: !Ref DevPortalFeedbackTableName
+      BillingMode: PAY_PER_REQUEST
       AttributeDefinitions:
       - AttributeName: Id
         AttributeType: S
       KeySchema:
       - AttributeName: Id
         KeyType: HASH
-      ProvisionedThroughput:
-        ReadCapacityUnits: 5
-        WriteCapacityUnits: 5
       GlobalSecondaryIndexes:
       - IndexName: FeedbackIdIndex
         KeySchema:
@@ -1337,8 +1331,6 @@ Resources:
 
   CognitoUserPool:
     Type: AWS::Cognito::UserPool
-    DeletionPolicy: Retain
-    UpdateReplacePolicy: Retain
     Properties:
       UserPoolName: !Ref CognitoIdentityPoolName
       # Lambda trigger caveats:
@@ -1680,8 +1672,6 @@ Resources:
 
   CognitoAdminsGroup:
     Type: AWS::Cognito::UserPoolGroup
-    DeletionPolicy: Retain
-    UpdateReplacePolicy: Retain
     Properties:
       Description: 'Admin users of the developer portal'
       GroupName: !Join ['', [!Ref 'AWS::StackName', 'AdminsGroup']]
@@ -1693,8 +1683,6 @@ Resources:
 
   CognitoRegisteredGroup:
     Type: AWS::Cognito::UserPoolGroup
-    DeletionPolicy: Retain
-    UpdateReplacePolicy: Retain
     Properties:
       Description: 'Registered users in the developer portal'
       GroupName: !Sub '${AWS::StackName}-RegisteredGroup'

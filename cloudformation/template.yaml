@@ -682,8 +682,6 @@ Resources:
 
   CustomersTable:
     Type: AWS::DynamoDB::Table
-    DeletionPolicy: Retain
-    UpdateReplacePolicy: Retain
     Properties:
       TableName: !Ref DevPortalCustomersTableName
       BillingMode: PAY_PER_REQUEST
@@ -741,10 +739,7 @@ Resources:
           KeyType: HASH
         Projection:
           ProjectionType: KEYS_ONLY
-        ProvisionedThroughput:
-          ReadCapacityUnits: 5
-          WriteCapacityUnits: 5
-
+      
   FeedbackSubmittedSNSTopic:
     Type: AWS::SNS::Topic
     Condition: EnableFeedbackSubmission

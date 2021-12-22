@@ -64,7 +64,7 @@ exports.handler = async (event, context) => {
           Timeout: 1
         }).promise()
         await lambdaEdge.waitFor('functionExists', { FunctionName: functionName }).promise()
-        await lambdaEdge.waitFor('functionActive', { FunctionName: functionName, $waiter: { delay: 10, maxAttempts: 10 } }).promise()
+        await lambdaEdge.waitFor('functionActive', { FunctionName: functionName, $waiter: { delay: 2, maxAttempts: 5 } }).promise()
         console.log('Publishing initial version')
         versionResult = await lambdaEdge.publishVersion({
           FunctionName: createResult.FunctionArn

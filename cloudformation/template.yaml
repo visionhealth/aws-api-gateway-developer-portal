@@ -30,6 +30,7 @@ Metadata:
           - CognitoIdentityPoolName
           - DevPortalCustomersTableName
           - AccountRegistrationMode
+          - AllowedEmailDomains
       # Marketplace support is currently broken
       # -
       #   Label:
@@ -168,6 +169,11 @@ Parameters:
       - 'open'
       # - 'request'
       - 'invite'
+
+  AllowedEmailDomains:
+    Type: String
+    Description: A comma-separated list of email domains that are allowed to register for an account. If left blank, any email domain is allowed. This parameter is only used if AccountRegistrationMode is set to 'open'.
+    Default: ''
 
 Conditions:
   UseCustomDomainName: !And [!And [!Not [!Equals [!Ref CustomDomainName, '']], !Not [!Equals [!Ref CustomDomainNameAcmCertArn, '']]], !Condition NotDevelopmentMode]
@@ -1281,6 +1287,7 @@ Resources:
       Environment:
         Variables:
           AccountRegistrationMode: !Ref AccountRegistrationMode
+          AllowedEmailDomains: !Ref AllowedEmailDomains
       Layers:
         - !Ref LambdaCommonLayer
 

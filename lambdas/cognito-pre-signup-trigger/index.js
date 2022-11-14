@@ -19,6 +19,9 @@
 // - As we're only testing, I replaced all the non-capturing groups with capturing ones.
 //
 // This is the same regexp as is used in dev-portal/src/pages/Admin/Accounts/PendingInvites.jsx.
+
+const validEmailDomains = process.env.AllowedEmailDomains.split(',');
+
 const validEmailRegex =
   /^[\w.!#$%&'*+/=?^`{|}~-]+@[^_\W]([a-z\d-]{0,61}[^_\W])?(\.[^_\W]([a-z\d-]{0,61}[^_\W])?)*$/i
 
@@ -26,6 +29,13 @@ exports.handler = async event => {
   const email = event.request.userAttributes.email
   if (email == null) throw new Error('Email is required.')
   if (!validEmailRegex.test(email)) throw new Error('Email is invalid.')
+
+  if (validEmailDomains.length > 0 && validEmailDomains[0] !== '') {
+    const emailDomain = email.split('@')[1]
+    if (!validEmailDomains.includes(emailDomain)) {
+      throw new Error(`Email domain ${emailDomain} is not allowed.`);
+    }
+  }
 
   // To block the sign-up from occurring, throw an error. The message will be
   // displayed to the user when they attempt to sign up, before Cognito asks

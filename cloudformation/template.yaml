@@ -631,6 +631,8 @@ Resources:
       Variables:
         DevPortalFunctionName: !Ref DevPortalLambdaFunction
 
+# ACL's are disabled in favour of policies see below
+# https://aws.amazon.com/blogs/aws/heads-up-amazon-s3-security-changes-are-coming-in-april-of-2023/
   DevPortalSiteS3Bucket:
     Type: AWS::S3::Bucket
     Properties:
@@ -640,6 +642,18 @@ Resources:
         BlockPublicPolicy: !If [ NotDevelopmentMode, 'true', 'false' ]
         IgnorePublicAcls: !If [ NotDevelopmentMode, 'true', 'false' ]
         RestrictPublicBuckets: !If [ NotDevelopmentMode, 'true', 'false' ]
+
+  DevPortalSiteS3BucketPolicyDev:
+    Type: 'AWS::S3::BucketPolicy'
+    Condition: 'DevelopmentMode'
+    Properties:
+      Bucket: !Ref DevPortalSiteS3Bucket
+      PolicyDocument:
+        Statement:
+          - Action: 's3:GetObject'
+            Effect: Allow
+            Resource: !Sub 'arn:aws:s3:::${DevPortalSiteS3Bucket}/*'
+            Principal: "*"
 
   DevPortalSiteS3BucketPolicy:
     Type: 'AWS::S3::BucketPolicy'

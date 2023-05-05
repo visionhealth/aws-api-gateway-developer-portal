@@ -175,9 +175,9 @@ class State {
     }
     const options = {}
 
-    if (this.event.ResourceProperties.DevelopmentMode === 'true') {
-      params.ACL = 'public-read'
-    }
+    // if (this.event.ResourceProperties.DevelopmentMode === 'true') {
+    //   params.ACL = 'public-read'
+    // }
 
     // FIXME: Marketplace support is currently broken
     // const suffix = this.event.ResourceProperties.MarketplaceSuffix
@@ -209,9 +209,9 @@ class State {
       }
       const options = {}
 
-      if (this.event.ResourceProperties.DevelopmentMode === 'true') {
-        params.ACL = 'public-read'
-      }
+      // if (this.event.ResourceProperties.DevelopmentMode === 'true') {
+      //   params.ACL = 'public-read'
+      // }
 
       // body just pollutes logs and takes up space
       console.log('uploading to s3', {
